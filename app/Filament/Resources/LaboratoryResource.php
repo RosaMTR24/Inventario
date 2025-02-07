@@ -16,15 +16,19 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class LaboratoryResource extends Resource
 {
     protected static ?string $model = Laboratory::class;
+    protected static ?string $navigationLabel = 'Laboratorios';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Complementos';
+
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->required()
+                ->label('Nombre') ->required()
                     ->maxLength(255),
             ]);
     }
@@ -32,9 +36,11 @@ class LaboratoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->emptyStateHeading('No hay laboratorios')
+        ->emptyStateIcon('heroicon-m-no-symbol')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                ->label('Laboratorio')->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

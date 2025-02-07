@@ -28,7 +28,8 @@ class ListLoans extends ListRecords
         return [
             Actions\CreateAction::make()
                 ->label('Solicitar material')
-                ->visible($visible),
+                ->visible($visible)
+                ->successRedirectUrl(route('filament.student.resources.loans.index')),
         ];
     }
 }

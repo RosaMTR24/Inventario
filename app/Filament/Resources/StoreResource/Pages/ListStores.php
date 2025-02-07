@@ -9,11 +9,14 @@ use Filament\Resources\Pages\ListRecords;
 class ListStores extends ListRecords
 {
     protected static string $resource = StoreResource::class;
+    protected static ?string $title = 'Inventario';
+    
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('Añadir'),
         ];
     }
 }

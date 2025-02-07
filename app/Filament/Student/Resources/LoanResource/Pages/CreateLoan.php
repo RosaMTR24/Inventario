@@ -14,6 +14,7 @@ class CreateLoan extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = Auth::user()->id;
+        $data['state_loan'] = 'waiting';
 
         return $data;
     }

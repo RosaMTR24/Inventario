@@ -15,17 +15,17 @@ class CreateLoan extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        User::created(['email'=>$data['email'],'password'=>$data['password']]);
-        $user_id = User::where('email', $data['email'])->value('id');
-        unset($data['email']);
-        unset($data['password']);
+        // User::created(['email' => $data['email'], 'password' => $data['password']]);
+        // $user_id = User::where('email', $data['email'])->value('id');
+        // unset($data['email']);
+        // unset($data['password']);
+        $user = Auth::user();
+        // dd($user->teacher);
+        
         $data['user_id'] = auth()->id();
-        $data['teacher_id'] = Auth::user()->teacher->id;
+        $data['teacher_id'] = $user->teacher->id;
         $data['state_loan'] = 'on_loan';
-        $data['user_id'] = $user_id;
-    return $data;
+        // $data['user_id'] = $user_id;
+        return $data;
     }
-     
-
 }
-

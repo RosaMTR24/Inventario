@@ -12,18 +12,29 @@ class Component extends Model
 
     protected $guarded = [];
 
-    public function store():BelongsTo{
+
+    protected static function booted()
+    {
+        static::updating(function ($component) {
+            // Eliminar el campo category_id si se está actualizando
+            if ($component->isDirty('category_id')) {
+                unset($component->category_id);
+            }
+        });
+    }
+
+
+    public function store(): BelongsTo
+    {
         return $this->belongsTo(Store::class);
     }
-    public function loan():BelongsTo{
+    public function loan(): BelongsTo
+    {
         return $this->belongsTo(Loan::class);
     }
 
-    public function category():BelongsTo{
+    public function category(): BelongsTo
+    {
         return $this->belongsTo(Category::class);
     }
-
-    
-
-    
 }

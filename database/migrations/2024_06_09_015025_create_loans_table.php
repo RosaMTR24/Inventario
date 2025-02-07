@@ -26,7 +26,7 @@ return new class extends Migration
             ->onDelete('cascade')
             ->onUpdate('cascade');
             $table->string('materia');
-            $table->enum('state_loan',['on_loan','delivered'])->default('on_loan');
+            $table->enum('state_loan',['on_loan','delivered', 'waiting'])->default('on_loan');
             $table->timestamps();
         });
     }

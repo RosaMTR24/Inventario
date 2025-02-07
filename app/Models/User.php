@@ -14,10 +14,14 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser
 {
+    
     use HasFactory, Notifiable;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -26,7 +30,8 @@ class User extends Authenticatable implements FilamentUser
      */
 
 
-     
+
+   
      
     protected $fillable = [
         'name',
@@ -67,14 +72,58 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(Teacher::class);
     }
 
+    public function student():HasOne{
+        return $this->hasOne(Student::class);
+    }
+
+
+    
+
+    private function authoritationUser($roles, $panel):bool{
+        $auth = false;
+        foreach($roles as $role){
+
+            if($panel == 'admin'){
+                if($role == 'admin'){
+                    $auth = true;
+                    break;
+                }
+            }elseif($panel == 'teachers'){
+                if($role == 'teacher'){
+                    $auth = true;
+                    break;
+                }
+            }else{
+                if($role == 'student'){
+                    $auth = true;
+                    break;
+                }
+            }
+            
+        }
+
+        return $auth;
+    }
 
     public function canAccessPanel(Panel $panel): bool
     {
-        /*if ($panel->getId() === 'admin') {
-            return str_ends_with($this->email, '@admin.com');
-        }*/
- 
-        return true;
+        $authoritation = false;
+        
+        $roles = Auth::user()->getRoleNames();
+        
+        if ($panel->getId() === 'admin') {
+
+            $authoritation = $this->authoritationUser($roles, 'admin');
+
+        } elseif ($panel->getId() === 'teachers') {
+
+            $authoritation = $this->authoritationUser($roles, 'teachers');
+
+        } else {
+
+            $authoritation = $this->authoritationUser($roles, 'student');
+        }
+
+        return $authoritation;
     }
 }
-

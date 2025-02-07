@@ -2,6 +2,7 @@
 
 namespace App\Filament\Student\Resources\LoanResource\RelationManagers;
 
+use App\Models\Store;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -18,31 +19,40 @@ class ComponentRelationManager extends RelationManager
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('component_id')
+                    ->relationship('category', 'name')
+                    ->default('Electronica')
+                    ->columnSpanFull()
+                    ->live(),
                 Forms\Components\Select::make('store_id')
-                ->label('Componente')
-                ->relationship('store','name_component')
-                ->required(),
+                    ->label('Componente')
+                    ->options(function (callable $get) {
+                        $components = Store::where('category_id', $get('component_id'))->pluck('name_component', 'id');
+                        return $components;
+                    })
+                    ->required(),
                 Forms\Components\TextInput::make('number')
-                ->label('Cantidad')
+                    ->label('Cantidad')
                     ->required()
-                    ->numeric(),
-                Forms\components\Select::make('component_id')
-                ->relationship('category','name')
-                    
+                    ->numeric()
             ]);
     }
 
     public function table(Table $table): Table
     {
+        
+        $estado = $this->getOwnerRecord()->state_loan;
+
+
         return $table
-        ->emptyStateHeading('Sin componentes')
-        ->emptyStateDescription('Añade componentes a tu prestamo')
+            ->emptyStateHeading('Sin componentes')
+            ->emptyStateDescription('Añade componentes a tu prestamo')
             ->recordTitleAttribute('store_id')
             ->columns([
                 Tables\Columns\TextColumn::make('store.name_component')
-                ->label('Componente'),
+                    ->label('Componente'),
                 Tables\Columns\TextColumn::make('number')
-                ->label('Cantidad')
+                    ->label('Cantidad')
             ])
             ->filters([
                 //
@@ -50,7 +60,14 @@ class ComponentRelationManager extends RelationManager
             ->headerActions([
 
                 Tables\Actions\CreateAction::make()
-                ->label('Añadir componente'),
+                    ->mutateFormDataUsing(function (array $data): array {
+                        unset($data['component_id']);
+                        return $data;
+                    })
+                    ->label('Añadir componente')
+                    ->visible(function(){
+                        return $this->getOwnerRecord()->state_loan == 'waiting' ? true : false;
+                    }),
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),

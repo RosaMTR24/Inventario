@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\LoanResource\Pages;
 use App\Filament\Resources\LoanResource\RelationManagers;
 use App\Models\Loan;
+use App\Models\Teacher;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -17,29 +19,47 @@ class LoanResource extends Resource
 {
     protected static ?string $model = Loan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-ticket';
+    protected static ?string $navigationLabel = 'Tikets';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
+                ->label('Usuario')    
+                ->relationship('user', 'name')
+                    ->hiddenOn('edit')
+                    ->required()
+                    ->searchable(),
+                // Forms\Components\Select::make('teacher_id')
+                //     ->relationship('teacher.user', 'id')
+                //     ->disabledOn('edit')
+                //     ->required(),
                 Forms\Components\Select::make('teacher_id')
-                    ->relationship('teacher', 'name')
+                    ->label('Profesor')
+                    ->options(function () {
+                        $teachers = Teacher::whereHas('user', function (Builder $query) {
+                        })->with('user:id,name')->get();
+                        return $teachers->pluck('user.name', 'id')->toArray();
+                    })
                     ->required(),
                 Forms\Components\Select::make('laboratory_id')
-                    ->relationship('laboratory', 'name')
+                ->label('Laboratorio') ->relationship('laboratory', 'name')
+                    ->disabledOn('edit')
                     ->required(),
                 Forms\Components\TextInput::make('materia')
-                    ->required()
+                ->label('Materia') ->required()
+                    ->disabledOn('edit')
                     ->maxLength(255),
                 Forms\Components\Select::make('state_loan')
                     ->options([
-                        'on_loan'=>'en prestamo',
-                        'delivered'=>'entregado'
+                        'waiting' => 'En espera',
+                        'on_loan' => 'en prestamo',
+                        'delivered' => 'entregado'
+                        
                     ])
+                    ->hiddenOn('create')
                     ->required(),
             ]);
     }
@@ -47,21 +67,29 @@ class LoanResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->emptyStateHeading('No hay tickets')
+            ->emptyStateIcon('heroicon-m-no-symbol')
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('teacher.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('laboratory.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('materia')
+                ->label('Usuario')  ->numeric()
+                    ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('state_loan'),
+                Tables\Columns\TextColumn::make('teacher.user.name')
+                ->label('Profesor') ->numeric(),
+                Tables\Columns\TextColumn::make('laboratory.name')
+                ->label('Laboratorio') ->numeric(),
+                Tables\Columns\TextColumn::make('materia')
+                ->label('Materia') ->searchable(),
+                Tables\Columns\TextColumn::make('state_loan')
+                ->label('Estado') ->badge()
+                    ->color(function ($state) {
+                        return $state === 'on_loan' ? 'warning' : 'success';
+                    })
+                    ->formatStateUsing(function ($state) {
+                        return $state === 'on_loan' ? 'En prestamo' : ($state == 'waiting' ? 'En espera' : 'Entregado');
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime() 
+                    ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
@@ -85,7 +113,7 @@ class LoanResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\ComponentRelationManager::class
         ];
     }
 

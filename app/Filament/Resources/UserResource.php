@@ -17,29 +17,41 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Usuarios';
+    protected static ?string $navigationLabel = 'Administradores';
+
+
+
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->whereHas('roles', function (Builder $query) {
+                $query->where('name', 'admin');
+            });
+    }
+
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->required()
+                ->label('Nombre')->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->email()
-                    ->required()
+                    ->label('Correo electronico')->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('studentID')
-                    ->maxLength(255)
-                    ->default(null),
                 Forms\Components\TextInput::make('career')
-                    ->required()
+                ->label('Carrera')->required()
                     ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
+                // Forms\Components\DateTimePicker::make('email_verified_at'),
                 Forms\Components\TextInput::make('password')
+                    ->hiddenOn('edit')
                     ->password()
-                    ->required()
+                    ->label('Contraseña')->required()
                     ->maxLength(255),
             ]);
     }
@@ -47,16 +59,19 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->emptyStateHeading('No hay administradores')
+            ->emptyStateIcon('heroicon-m-no-symbol')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                ->label('Nombre')->searchable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('studentID')
-                    ->searchable(),
+                ->label('Correo electronico')->searchable(),
+                // Tables\Columns\TextColumn::make('studentID')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('career')
-                    ->searchable(),
+                ->label('Carrera')->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
+                ->label('Verificación')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -76,7 +91,8 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ,
                 ]),
             ]);
     }

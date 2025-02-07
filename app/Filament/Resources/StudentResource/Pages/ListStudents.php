@@ -9,11 +9,13 @@ use Filament\Resources\Pages\ListRecords;
 class ListStudents extends ListRecords
 {
     protected static string $resource = StudentResource::class;
+    protected static ?string $title = 'Estudiantes';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('Añadir estudiante') ,
         ];
     }
 }

@@ -9,11 +9,13 @@ use Filament\Resources\Pages\ListRecords;
 class ListLaboratories extends ListRecords
 {
     protected static string $resource = LaboratoryResource::class;
+    protected static ?string $title = 'Laboratorios';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('Añadir laboratorios'),
         ];
     }
 }

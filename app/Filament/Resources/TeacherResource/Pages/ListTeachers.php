@@ -9,11 +9,13 @@ use Filament\Resources\Pages\ListRecords;
 class ListTeachers extends ListRecords
 {
     protected static string $resource = TeacherResource::class;
+    protected static ?string $title = 'Profesores';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('Añadir profesor'),
         ];
     }
 }

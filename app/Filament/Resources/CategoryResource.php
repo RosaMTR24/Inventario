@@ -15,16 +15,26 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CategoryResource extends Resource
 {
+
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return 'success';
+    // }
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $navigationLabel = 'Categorias';
+    protected static ?string $navigationGroup = 'Complementos';
+    // protected static ?string $active
+
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->required()
+                ->label('Nombre')->required()
                     ->maxLength(255),
             ]);
     }
@@ -32,9 +42,11 @@ class CategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->emptyStateHeading('No hay categorias')
+        ->emptyStateIcon('heroicon-m-no-symbol')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                ->label('Categoria')->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

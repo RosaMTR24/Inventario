@@ -26,9 +26,16 @@ class TeachersPanelProvider extends PanelProvider
             ->login()
             ->id('teachers')
             ->path('teachers')
+            ->breadcrumbs(false)
             ->colors([
-                'primary' => Color::Amber,
+                'danger' => Color::Red,
+                'gray' => Color::Emerald,
+                'info' => Color::Indigo,
+                'primary' => Color::Violet,
+                'success' => Color::Stone,
+                'warning' => Color::Orange,
             ])
+            ->darkMode(false)
             ->discoverResources(in: app_path('Filament/Teachers/Resources'), for: 'App\\Filament\\Teachers\\Resources')
             ->discoverPages(in: app_path('Filament/Teachers/Pages'), for: 'App\\Filament\\Teachers\\Pages')
             ->pages([
@@ -37,7 +44,7 @@ class TeachersPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Teachers/Widgets'), for: 'App\\Filament\\Teachers\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -50,6 +57,7 @@ class TeachersPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+           // ->viteTheme('resources/css/filament/admin/theme.css')
             ->authMiddleware([
                 Authenticate::class,
             ]);

@@ -11,14 +11,16 @@ class Teacher extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','career'];
-    
+    protected $fillable = ['name', 'career', 'user_id'];
 
-    public function loan():HasMany{
+
+    public function loan(): HasMany
+    {
         return $this->hasMany(Loan::class);
     }
 
-    public function user():BelongsTo{
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 }

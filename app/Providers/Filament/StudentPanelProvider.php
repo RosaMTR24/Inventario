@@ -28,10 +28,17 @@ class StudentPanelProvider extends PanelProvider
             ->id('student')
             ->path('student')
             ->default()
-            ->login(LoginStudent::class)
+            // ->login(LoginStudent::class)
+            ->login()
+            ->breadcrumbs(false)
             ->registration(RegisterUser::class)
             ->colors([
-                'primary' => Color::Blue,
+                'danger' => Color::Red,
+                'gray' => Color::Emerald,
+                'info' => Color::Blue,
+                'primary' => Color::Fuchsia,
+                'success' => Color::Stone,
+                'warning' => Color::Orange,
             ])
             ->discoverResources(in: app_path('Filament/Student/Resources'), for: 'App\\Filament\\Student\\Resources')
             ->discoverPages(in: app_path('Filament/Student/Pages'), for: 'App\\Filament\\Student\\Pages')
@@ -54,6 +61,7 @@ class StudentPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            //->viteTheme('resources/css/filament/admin/theme.css')
             ->authMiddleware([
                 Authenticate::class,
             ]);

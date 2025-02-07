@@ -9,11 +9,13 @@ use Filament\Resources\Pages\ListRecords;
 class ListLoans extends ListRecords
 {
     protected static string $resource = LoanResource::class;
+    protected static ?string $title = 'Tickets';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('Solicitar material'),
         ];
     }
 }

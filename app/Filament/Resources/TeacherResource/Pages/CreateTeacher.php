@@ -10,15 +10,31 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateTeacher extends CreateRecord
 {
     protected static string $resource = TeacherResource::class;
+    protected static ?string $title = 'Crear Profesor'; // Atributo para el título
+
+    public function getHeading(): string
+    {
+        return static::$title; // Devolver el título p
+    }
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        User::created(['name'=>$data['name'],'career'=>$data['career'],'email'=>$data['email'],'password'=>$data['password']]);
-        $user_id = User::where('email', $data['email'])->value('id');
+        $user = new User();
+        $user->name = $data['name'];
+        $user->career = $data['career'];
+        $user->email = $data['email'];
+        $user->password = $data['password'];
+        $user->save();
+        $user->assignRole('teacher');
+
+
+        //se limpia la data
         unset($data['email']);
         unset($data['password']);
-        $data['user_id'] = $user_id;
-        
-        return $data;
+      //  unset($data['name']);
+      //  unset($data['career']);
 
+        $data['user_id'] = $user->id;
+
+        return $data;
     }
 }

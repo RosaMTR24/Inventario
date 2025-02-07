@@ -9,4 +9,10 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateCategory extends CreateRecord
 {
     protected static string $resource = CategoryResource::class;
+    protected static ?string $title = 'Crear categoria'; // Atributo para el título
+
+    public function getHeading(): string
+    {
+        return static::$title; // Devolver el título p
+    }
 }
