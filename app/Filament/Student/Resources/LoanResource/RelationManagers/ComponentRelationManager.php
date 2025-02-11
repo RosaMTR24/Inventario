@@ -19,7 +19,7 @@ class ComponentRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('component_id')
+                Forms\Components\Select::make('component_id')->label('Categoría')
                     ->relationship('category', 'name')
                     ->default('Electronica')
                     ->columnSpanFull()

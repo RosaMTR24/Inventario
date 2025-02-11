@@ -20,8 +20,9 @@ class ComponentRelationManager extends RelationManager
     public function form(Form $form): Form
     {
         return $form
+           
             ->schema([
-                Forms\Components\Select::make('component_id')
+                Forms\Components\Select::make('component_id')->label('Categoría')
                     ->relationship('category', 'name')
                     ->default('Electronica')
                     ->columnSpanFull()
@@ -52,7 +53,7 @@ class ComponentRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
+                Tables\Actions\CreateAction::make()->label('Añadir componente')
                     ->visible(function () {
                         $parentRecord = $this->getOwnerRecord();
                         return $parentRecord && ($parentRecord->state_loan === 'on_loan' || $parentRecord->state_loan === 'waiting' );

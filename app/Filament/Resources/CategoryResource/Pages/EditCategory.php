@@ -19,7 +19,9 @@ class EditCategory extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()->label('Borrar') // Cambia el texto del botón
+            ->modalHeading('Borrar categoría') // Cambia el título del modal de confirmación
+            ->modalSubheading('¿Estás seguro de borrar esta categoría?'),
         ];
     }
 }

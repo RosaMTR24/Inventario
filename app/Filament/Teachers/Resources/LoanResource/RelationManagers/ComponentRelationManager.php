@@ -12,12 +12,13 @@ use Filament\Tables\Table;
 class ComponentRelationManager extends RelationManager
 {
     protected static string $relationship = 'component';
+    protected static ?string $title = 'Material';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('component_id')
+                Forms\Components\Select::make('component_id')->label('Categoría')
                     ->relationship('category', 'name')
                     ->default('Electronica')
                     ->columnSpanFull()
@@ -54,7 +55,7 @@ class ComponentRelationManager extends RelationManager
                 // Define filters if needed
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
+                Tables\Actions\CreateAction::make()->label('Añadir componente')
                     ->mutateFormDataUsing(function (array $data): array {
                         unset($data['component_id']);
                         return $data;

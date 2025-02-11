@@ -53,7 +53,7 @@ class LoanResource extends Resource
                     ->disabledOn('edit')
                     ->maxLength(255),
                 Forms\Components\Select::make('state_loan')
-                    ->options([
+                    ->label('Estado')->options([
                         'waiting' => 'En espera',
                         'on_loan' => 'en prestamo',
                         'delivered' => 'entregado'
