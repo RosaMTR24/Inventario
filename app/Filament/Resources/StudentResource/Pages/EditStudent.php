@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Filament\Resources\StudentResource\Pages;
-
+use App\Models\User;
 use App\Filament\Resources\StudentResource;
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 
 class EditStudent extends EditRecord
@@ -19,9 +20,19 @@ class EditStudent extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make()->label('Borrar') // Cambia el texto del botón
+            Action::make('delate')->label('Borrar') // Cambia el texto del botón
+            ->requiresConfirmation()
             ->modalHeading('Borrar estudiante') // Cambia el título del modal de confirmación
             ->modalSubheading('¿Estás seguro de borrar a este estudiante?') // Cambia el mensaje de confirmación,
+            ->button()
+            ->color('danger')
+            ->action(function(){
+                //dd($this->getResource()::getRoute('index'));
+                User::where('id',$this->getRecord()->user_id)->delete();
+                return redirect($this->getResource()::getUrl('index'));
+
+            })
+        
         ];
     }
 

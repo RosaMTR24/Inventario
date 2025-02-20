@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\TeacherResource\Pages;
 
 use App\Filament\Resources\TeacherResource;
+use App\Models\User;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Actions\Action;
 
 class EditTeacher extends EditRecord
 {
@@ -20,9 +22,22 @@ class EditTeacher extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make()->label('Borrar') // Cambia el texto del botón
+            //Actions\DeleteAction::make()->label('Borrar') // Cambia el texto del botón
+            //->modalHeading('Borrar profesor') // Cambia el título del modal de confirmación
+            //->modalSubheading('¿Estás seguro de borrar a este profesor?'),
+
+            Action::make('delate')->label('Borrar') // Cambia el texto del botón
+            ->requiresConfirmation()
             ->modalHeading('Borrar profesor') // Cambia el título del modal de confirmación
-            ->modalSubheading('¿Estás seguro de borrar a este profesor?'),
+            ->modalSubheading('¿Estás seguro de borrar a este profesor?')
+            ->button()
+            ->color('danger')
+            ->action(function(){
+                //dd($this->getResource()::getRoute('index'));
+                User::where('id',$this->getRecord()->user_id)->delete();
+                return redirect($this->getResource()::getUrl('index'));
+
+            })
         ];
     }
 
